@@ -133,7 +133,7 @@ sub {
         <div class="meteor"></div>
 </div>
 
-<sub>build <span class="build-time">2024/12/24 17:45</span></sub>
+<sub>build <span class="build-time">2024/12/24 17:46</span></sub>
 
 ---
 
@@ -1437,22 +1437,3 @@ li {
 <div class="progress">
   <div class="bar" style="--start-progress: 27;">
 </div>
-
----
-
-<div class="spe-star opac"></div>
-
-<div class="spe-star"></div>
-<div class="sky">
-        <div class="meteor"></div>
-        <div class="meteor"></div>
-        <div class="meteor"></div>
-        <div class="meteor"></div>
-        <div class="meteor"></div>
-        <div class="meteor"></div>
-        <div class="meteor"></div>
-        <div class="meteor"></div>
-        <div class="meteor"></div>
-</div>
-
-<a href="https://hx3n.github.io/--site/" class="end">사이트</a>
