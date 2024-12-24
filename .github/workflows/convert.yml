@@ -1,0 +1,50 @@
+name: Convert index.md to index.html with build time
+
+on:
+  push:
+    branches:
+      - main # main 브랜치에 푸시될 때마다 실행
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  convert-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 저장소 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # gh-pages 브랜치로 푸시하기 위해 전체 히스토리 가져오기
+
+      # 2. 빌드 시간 삽입
+      - name: Add build time to index.md
+        run: |
+          # 한국 표준시 (UTC+9) 기준 현재 시간 가져오기
+          BUILD_TIME=$(TZ=Asia/Seoul date +"%Y/%m/%d %H:%M")
+
+          # BUILD_TIME의 특수 문자 이스케이프 처리
+          ESCAPED_BUILD_TIME=$(printf '%s\n' "$BUILD_TIME" | sed 's/[&/\\]/\\&/g')
+
+          # index.md에서 빌드 시간 자리 표시자 대체
+          sed -i "s|<sub>build <span class=\"build-time\"></span></sub>|<sub>build <span class=\"build-time\">$ESCAPED_BUILD_TIME</span></sub>|g" index.md
+
+      # 3. Markdown을 HTML 및 PDF로 변환
+      - name: Convert Markdown into HTML and PDF
+        uses: KoharaKazuya/marp-cli-action@v2
+
+      # 4. 변경 사항 커밋 (필요 시)
+      - name: Commit changes
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Auto-update index.md with build time and generate index.html and index.pdf" || echo "No changes to commit"
+
+      # 5. GitHub Pages에 배포
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./
